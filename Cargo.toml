@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+  "business",
+  "application",
+  "interfaces",
+  "infrastructure",
+  "tests"
+]
