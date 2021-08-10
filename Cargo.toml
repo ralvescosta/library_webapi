@@ -1,9 +1,10 @@
 [workspace]
 
 members = [
-  "business",
   "application",
-  "interfaces",
+  "business",
   "infrastructure",
-  "tests"
+  "interface",
+  "tests",
+  "webapi",
 ]

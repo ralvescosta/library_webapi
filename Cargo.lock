@@ -5,6 +5,9 @@ version = 3
 [[package]]
 name = "application"
 version = "0.1.0"
+dependencies = [
+ "business",
+]
 
 [[package]]
 name = "business"
@@ -13,11 +16,23 @@ version = "0.1.0"
 [[package]]
 name = "infrastructure"
 version = "0.1.0"
+dependencies = [
+ "application",
+ "business",
+]
 
 [[package]]
 name = "interfaces"
 version = "0.1.0"
+dependencies = [
+ "application",
+ "business",
+]
 
 [[package]]
 name = "tests"
+version = "0.1.0"
+
+[[package]]
+name = "webapi"
 version = "0.1.0"
