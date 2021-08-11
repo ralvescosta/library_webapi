@@ -1,5 +1,5 @@
-use business::book::Book;
+use business::entities::book::Book;
 
-pub trait IBookRepository {
-    fn create(self) -> Book;
+pub trait IBookRepository: Send {
+    fn create(&self) -> Book;
 }

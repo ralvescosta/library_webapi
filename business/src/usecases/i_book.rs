@@ -1,3 +1,3 @@
-pub trait IBookUsecase {
+pub trait IBookUseCase {
     fn perform(&self);
 }

@@ -1,9 +1,10 @@
-use application::IBookRepository;
+use application::interfaces::i_book_repository::IBookRepository;
+use business::entities::book::Book;
 
 pub struct BookRepository {}
 
 impl IBookRepository for BookRepository {
-    fn create(self) -> business::book::Book {
+    fn create(&self) -> Book {
         todo!()
     }
 }
