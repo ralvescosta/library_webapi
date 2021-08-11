@@ -8,3 +8,9 @@ impl IBookRepository for BookRepository {
         todo!()
     }
 }
+
+impl BookRepository {
+    pub fn new() -> Box<BookRepository> {
+        Box::new(BookRepository {})
+    }
+}
