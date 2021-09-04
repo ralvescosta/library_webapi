@@ -2,9 +2,9 @@ mod controllers;
 mod middleware;
 mod models;
 
-use application::{interfaces::i_logger::ILogger, usecases::book::BookUseCase};
-use business::usecases::i_book::IBookUseCase;
-use infrastructure::{logger::logger::Logger, repositories::book_repository::BookRepository};
+use application::{interfaces::i_logger::ILogger, usecases::something::SomethingUseCase};
+use business::usecases::i_something::ISomethingUseCase;
+use infrastructure::logger::logger::Logger;
 
 use actix_cors::Cors;
 use actix_web::{http, middleware as actix_middleware, web, App, HttpServer};
@@ -13,14 +13,12 @@ use std::{io::Result, sync::Arc};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
-    let repository = BookRepository::new();
-    let usecase = BookUseCase::new(repository);
-    usecase.perform();
-
     std::env::set_var("RUST_LOG", "actix_web=trace");
     env_logger::init();
 
     HttpServer::new(|| {
+        let something_use_case = Arc::new(SomethingUseCase::new());
+
         App::new()
             .wrap(actix_middleware::Logger::default())
             .wrap(actix_middleware::Compress::default())
@@ -28,6 +26,10 @@ async fn main() -> Result<()> {
             .wrap(config_headers())
             .data(config_logger())
             .data(middleware::deserializer_error::handler())
+            // Injections
+            .app_data(web::Data::<Arc<dyn ISomethingUseCase>>::new(
+                something_use_case,
+            ))
     })
     .bind("127.0.0.1:3000")?
     .run()
