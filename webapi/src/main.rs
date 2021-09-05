@@ -2,9 +2,10 @@ mod controllers;
 mod middleware;
 mod models;
 
-use application::{interfaces::i_logger::ILogger, usecases::something::SomethingUseCase};
-use business::usecases::i_something::ISomethingUseCase;
+use application::{interfaces::i_logger::ILogger, usecases::book::BookUseCase};
+use business::usecases::i_book::IBookUseCase;
 use infrastructure::logger::logger::Logger;
+use infrastructure::repositories::book_repository::BookRepository;
 
 use actix_cors::Cors;
 use actix_web::{http, middleware as actix_middleware, web, App, HttpServer};
@@ -17,19 +18,19 @@ async fn main() -> Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
-        let something_use_case = Arc::new(SomethingUseCase::new());
+        let logger = config_logger();
+        let book_repository = Box::new(BookRepository::new(logger.clone()));
+        let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository));
 
         App::new()
             .wrap(actix_middleware::Logger::default())
             .wrap(actix_middleware::Compress::default())
             .wrap(config_cors())
             .wrap(config_headers())
-            .data(config_logger())
+            .data(logger)
             .data(middleware::deserializer_error::handler())
             // Injections
-            .app_data(web::Data::<Arc<dyn ISomethingUseCase>>::new(
-                something_use_case,
-            ))
+            .app_data(web::Data::<Arc<dyn IBookUseCase>>::new(book_use_case))
     })
     .bind("127.0.0.1:3000")?
     .run()
