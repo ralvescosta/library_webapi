@@ -1,5 +1,5 @@
-use crate::dtos::create_book_dto::CreateBookDto;
+use crate::{dtos::create_book_dto::CreateBookDto, entities::book::Book};
 
 pub trait IBookUseCase {
-    fn perform(&self, dto: CreateBookDto);
+    fn perform(&self, dto: CreateBookDto) -> Book;
 }

@@ -9,30 +9,31 @@ use infrastructure::repositories::book_repository::BookRepository;
 
 use actix_cors::Cors;
 use actix_web::{http, middleware as actix_middleware, web, App, HttpServer};
-use env_logger;
+
 use std::{io::Result, sync::Arc};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=trace");
-    env_logger::init();
+    std::env::set_var("RUST_LOG", "trace");
+    Logger::init();
 
     HttpServer::new(|| {
-        let logger = config_logger();
+        let logger = Arc::new(Logger::new());
         let book_repository = Box::new(BookRepository::new(logger.clone()));
         let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository));
-
         App::new()
             .wrap(actix_middleware::Logger::default())
             .wrap(actix_middleware::Compress::default())
             .wrap(config_cors())
             .wrap(config_headers())
-            .data(logger)
             .data(middleware::deserializer_error::handler())
             // Injections
+            .app_data(web::Data::<Arc<dyn ILogger>>::new(logger))
             .app_data(web::Data::<Arc<dyn IBookUseCase>>::new(book_use_case))
+            // routes
+            .service(controllers::book::create_book)
     })
-    .bind("127.0.0.1:3000")?
+    .bind("127.0.0.1:3333")?
     .run()
     .await
 }
@@ -70,8 +71,4 @@ fn config_headers() -> actix_middleware::DefaultHeaders {
             .header("X-XSS-Protection","0")
             .header("ETag", "W/\"213-XP2qvFfd8eh4EzgQSHCwnbPqiP4\"")
             .header("Vary", "Accept-Encoding")
-}
-
-fn config_logger() -> Arc<dyn ILogger> {
-    Arc::new(Logger::new())
 }
