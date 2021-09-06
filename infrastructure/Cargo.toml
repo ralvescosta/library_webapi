@@ -7,3 +7,4 @@ edition = "2018"
 business = {path = "../business"}
 application = {path = "../application"}
 log = "0.4.14"
+env_logger = "0.9.0"

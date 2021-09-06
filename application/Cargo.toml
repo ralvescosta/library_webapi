@@ -5,4 +5,5 @@ edition = "2018"
 
 [dependencies]
 business = {path = "../business"}
+async-trait = "0.1.51"
 
