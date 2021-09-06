@@ -1,7 +1,7 @@
 pub trait ILogger {
-    fn trace(&self, msg: String);
-    fn debug(&self, msg: String);
-    fn info(&self, msg: String);
-    fn warn(&self, msg: String);
-    fn error(&self, msg: String);
+    fn trace(&self, target: &str, msg: &str);
+    fn debug(&self, target: &str, msg: &str);
+    fn info(&self, target: &str, msg: &str);
+    fn warn(&self, target: &str, msg: &str);
+    fn error(&self, target: &str, msg: &str);
 }

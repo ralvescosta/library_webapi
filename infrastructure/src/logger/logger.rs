@@ -1,31 +1,37 @@
 use application::interfaces::i_logger::ILogger;
+use env_logger;
 use log::{debug, error, info, trace, warn};
+
+#[derive(Debug, Clone, Copy)]
 pub struct Logger;
 
 impl Logger {
-    pub fn new() -> Logger {
+    pub fn init() {
+        env_logger::init();
+    }
+    pub fn new() -> impl ILogger {
         Logger {}
     }
 }
 
 impl ILogger for Logger {
-    fn trace(&self, msg: String) {
-        trace!("{}", msg)
+    fn trace(&self, target: &str, msg: &str) {
+        trace!(target: target, "{}", msg)
     }
 
-    fn debug(&self, msg: String) {
-        debug!("{}", msg)
+    fn debug(&self, target: &str, msg: &str) {
+        debug!(target: target, "{}", msg)
     }
 
-    fn info(&self, msg: String) {
-        info!("{}", msg)
+    fn info(&self, target: &str, msg: &str) {
+        info!(target: target, "{}", msg)
     }
 
-    fn warn(&self, msg: String) {
-        warn!("{}", msg)
+    fn warn(&self, target: &str, msg: &str) {
+        warn!(target: target, "{}", msg)
     }
 
-    fn error(&self, msg: String) {
-        error!("{}", msg)
+    fn error(&self, target: &str, msg: &str) {
+        error!(target: target, "{}", msg)
     }
 }
