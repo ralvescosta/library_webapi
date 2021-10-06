@@ -4,9 +4,9 @@ mod models;
 
 use application::{interfaces::i_logger::ILogger, usecases::book::BookUseCase};
 use business::usecases::i_book::IBookUseCase;
-use infrastructure::database;
-use infrastructure::logger::logger::Logger;
-use infrastructure::repositories::book_repository::BookRepository;
+use infrastructure::{
+    database, environments, logger::logger::Logger, repositories::book_repository::BookRepository,
+};
 
 use actix_cors::Cors;
 use actix_web::{http, middleware as actix_middleware, web, App, HttpServer};
@@ -19,6 +19,7 @@ async fn main() -> Result<()> {
     Logger::init();
 
     HttpServer::new(|| {
+        environments::env::register_env().unwrap();
         let logger = Arc::new(Logger::new());
         let coon_pool = Arc::new(database::connection::create_connection_pool());
         let book_repository = Box::new(BookRepository::new(logger.clone(), coon_pool.clone()));
