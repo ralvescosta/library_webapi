@@ -1,0 +1,143 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug WEB_API",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=webapi",
+          "--package=webapi"
+        ],
+        "filter": {
+          "name": "webapi",
+          "kind": "bin"
+        },
+      },
+      "env": {
+        "RUST_ENV": "development",
+        "RUST_LOG": "trace"
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'application'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=application"
+        ],
+        "filter": {
+          "name": "application",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'business'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=business"
+        ],
+        "filter": {
+          "name": "business",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'infrastructure'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=infrastructure"
+        ],
+        "filter": {
+          "name": "infrastructure",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'tests'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=tests",
+          "--package=tests"
+        ],
+        "filter": {
+          "name": "tests",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'tests'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=tests",
+          "--package=tests"
+        ],
+        "filter": {
+          "name": "tests",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'webapi'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=webapi",
+          "--package=webapi"
+        ],
+        "filter": {
+          "name": "webapi",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
