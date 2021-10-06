@@ -4,6 +4,7 @@ mod models;
 
 use application::{interfaces::i_logger::ILogger, usecases::book::BookUseCase};
 use business::usecases::i_book::IBookUseCase;
+use infrastructure::database;
 use infrastructure::logger::logger::Logger;
 use infrastructure::repositories::book_repository::BookRepository;
 
@@ -19,8 +20,10 @@ async fn main() -> Result<()> {
 
     HttpServer::new(|| {
         let logger = Arc::new(Logger::new());
-        let book_repository = Box::new(BookRepository::new(logger.clone()));
+        let coon_pool = Arc::new(database::connection::create_connection_pool());
+        let book_repository = Box::new(BookRepository::new(logger.clone(), coon_pool.clone()));
         let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository));
+
         App::new()
             .wrap(actix_middleware::Logger::default())
             .wrap(actix_middleware::Compress::default())
