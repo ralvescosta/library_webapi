@@ -15,7 +15,6 @@ use std::{io::Result, sync::Arc};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
-    std::env::set_var("RUST_LOG", "trace");
     Logger::init();
 
     HttpServer::new(|| {
