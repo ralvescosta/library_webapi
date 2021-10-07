@@ -1,10 +1,12 @@
+use diesel::pg::PgConnection;
+use diesel::prelude::*;
+use diesel::r2d2::ConnectionManager;
+use std::sync::Arc;
+
 use application::interfaces::i_book_repository::IBookRepository;
 use application::interfaces::i_logger::ILogger;
 use business::dtos::create_book_dto::CreateBookDto;
 use business::entities::book::Book;
-use diesel::r2d2::ConnectionManager;
-use diesel::PgConnection;
-use std::sync::Arc;
 
 pub struct BookRepository {
     logger: Arc<dyn ILogger>,
@@ -12,11 +14,18 @@ pub struct BookRepository {
 }
 
 impl IBookRepository for BookRepository {
-    fn create(&self, _dto: CreateBookDto) -> Book {
-        self.logger.info("BookRepository", "Logging");
-        let _connection = self.pool.get().unwrap();
+    fn create(&self, dto: CreateBookDto) -> Book {
+        use crate::schema::books;
 
-        Book {}
+        self.logger.info("BookRepository", "Logging");
+        let connection = self.pool.get().unwrap();
+
+        let book = Book::from_dto(dto);
+
+        diesel::insert_into(books::table)
+            .values(&dto)
+            .get_result(&connection)
+            .expect("Error saving");
     }
 }
 
