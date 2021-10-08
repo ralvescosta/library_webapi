@@ -1,4 +1,5 @@
 pub struct Book {
+    pub id: i32,
     pub title: String,
     pub subject: String,
     pub author: String,
