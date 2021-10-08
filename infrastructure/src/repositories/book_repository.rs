@@ -8,6 +8,8 @@ use application::interfaces::i_logger::ILogger;
 use business::dtos::create_book_dto::CreateBookDto;
 use business::entities::book::Book;
 
+use crate::database::models::books::{BookModel, CreateBookModel};
+
 pub struct BookRepository {
     logger: Arc<dyn ILogger>,
     pool: Arc<r2d2::Pool<ConnectionManager<PgConnection>>>,
@@ -20,12 +22,12 @@ impl IBookRepository for BookRepository {
         self.logger.info("BookRepository", "Logging");
         let connection = self.pool.get().unwrap();
 
-        let book = Book::from_dto(dto);
-
-        diesel::insert_into(books::table)
-            .values(&dto)
+        let result: BookModel = diesel::insert_into(books::table)
+            .values(CreateBookModel::from_create_book_dto(dto))
             .get_result(&connection)
             .expect("Error saving");
+
+        result.to_book()
     }
 }
 
