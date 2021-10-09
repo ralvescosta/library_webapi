@@ -21,8 +21,8 @@ async fn main() -> Result<()> {
         environments::env::register_env().unwrap();
         let logger = Arc::new(Logger::new());
         let coon_pool = Arc::new(database::connection::create_connection_pool());
-        let book_repository = Box::new(BookRepository::new(logger.clone(), coon_pool.clone()));
-        let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository));
+        let book_repository = Arc::new(BookRepository::new(logger.clone(), coon_pool.clone()));
+        let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository.clone()));
 
         App::new()
             .wrap(actix_middleware::Logger::default())

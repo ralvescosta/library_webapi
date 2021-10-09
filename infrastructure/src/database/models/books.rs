@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::schema::books;
 use business::{dtos::create_book_dto::CreateBookDto, entities::book::Book};
 use chrono::{DateTime, Utc};
@@ -14,11 +16,19 @@ pub struct CreateBookModel {
 
 impl CreateBookModel {
     pub fn from_create_book_dto(dto: CreateBookDto) -> CreateBookModel {
+        let published_data = match dto.published_data.is_empty() {
+            false => match DateTime::<Utc>::from_str(&dto.published_data) {
+                Ok(date) => Some(date),
+                _ => None,
+            },
+            _ => None,
+        };
+
         CreateBookModel {
             title: dto.title,
             subject: dto.subject,
             author: dto.author,
-            published_date: None,
+            published_date: published_data,
             editor: dto.editor,
         }
     }
