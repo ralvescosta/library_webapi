@@ -1,0 +1,3 @@
+pub enum InternalError {
+    Default,
+}
