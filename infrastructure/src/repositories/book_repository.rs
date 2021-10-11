@@ -8,6 +8,7 @@ use business::dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBook
 use business::entities::book::Book;
 
 use crate::database::models::books::{BookModel, CreateBookModel, UpdateBookModel};
+use application::errors::internal_error::InternalError;
 
 pub struct BookRepository {
     _logger: Arc<dyn ILogger>,
@@ -15,59 +16,58 @@ pub struct BookRepository {
 }
 
 impl IBookRepository for BookRepository {
-    fn create(&self, dto: CreateBookDto) -> Book {
+    fn create(&self, dto: CreateBookDto) -> Result<Book, InternalError> {
         use crate::schema::books;
 
         let connection = self.pool.get().unwrap();
 
-        let result: BookModel = diesel::insert_into(books::table)
+        if let Ok(result) = diesel::insert_into(books::table)
             .values(CreateBookModel::from_create_book_dto(dto))
-            .get_result(&connection)
-            .expect("[BookRepository::create - Error]");
+            .get_result::<BookModel>(&connection)
+        {
+            return Ok(result.to_book());
+        }
 
-        result.to_book()
+        return Err(InternalError::Default);
     }
 
-    fn get_by_id(&self, index: i32) -> Option<Book> {
+    fn get_by_id(&self, index: i32) -> Result<Option<Book>, InternalError> {
         use crate::schema::books::dsl::*;
 
         let connection = self.pool.get().unwrap();
 
-        let books_model: Vec<BookModel> = books
-            .filter(id.eq(index))
-            .load(&connection)
-            .expect("[BookRepository::get_by_id - Error]");
-
-        if let Some(book) = books_model.first() {
-            return Some(book.to_book());
+        if let Ok(book_model) = books.filter(id.eq(index)).first::<BookModel>(&connection) {
+            return Ok(Some(book_model.to_book()));
         }
 
-        return None;
+        Ok(None)
     }
 
-    fn update(&self, index: i32, dto: UpdateBookDto) -> bool {
+    fn update(&self, index: i32, dto: UpdateBookDto) -> Result<bool, InternalError> {
         use crate::schema::books::dsl::books;
 
         let connection = self.pool.get().unwrap();
 
-        diesel::update(books.find(index))
+        if let Ok(_) = diesel::update(books.find(index))
             .set(UpdateBookModel::from_update_book_dto(dto))
             .execute(&connection)
-            .expect("[BookRepository::update - Error]");
+        {
+            return Ok(true);
+        }
 
-        true
+        Err(InternalError::Default)
     }
 
-    fn delete_by_id(&self, index: i32) -> bool {
+    fn delete_by_id(&self, index: i32) -> Result<bool, InternalError> {
         use crate::schema::books::dsl::{books, id};
 
         let connection = self.pool.get().unwrap();
 
-        diesel::delete(books.filter(id.eq(index)))
-            .execute(&connection)
-            .expect("[BookRepository::delete_by_id - Error]");
+        if let Ok(_) = diesel::delete(books.filter(id.eq(index))).execute(&connection) {
+            return Ok(true);
+        }
 
-        true
+        Err(InternalError::Default)
     }
 }
 

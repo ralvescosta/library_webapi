@@ -11,10 +11,13 @@ pub struct BookUseCase {
 }
 
 impl IBookUseCase for BookUseCase {
-    fn perform(&self, dto: CreateBookDto) -> Book {
+    fn perform(&self, dto: CreateBookDto) -> Result<Book, ()> {
         self.logger.info("IBookUseCase", "Logger");
-        let result = self.repository.create(dto);
-        result
+        if let Ok(result) = self.repository.create(dto) {
+            return Ok(result);
+        }
+
+        Err(())
     }
 }
 impl BookUseCase {
