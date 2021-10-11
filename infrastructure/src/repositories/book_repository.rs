@@ -7,7 +7,7 @@ use application::interfaces::{i_book_repository::IBookRepository, i_logger::ILog
 use business::dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBookDto};
 use business::entities::book::Book;
 
-use crate::database::models::books::{BookModel, CreateBookModel};
+use crate::database::models::books::{BookModel, CreateBookModel, UpdateBookModel};
 
 pub struct BookRepository {
     _logger: Arc<dyn ILogger>,
@@ -45,7 +45,16 @@ impl IBookRepository for BookRepository {
         return None;
     }
 
-    fn update(&self, dto: UpdateBookDto) -> bool {
+    fn update(&self, index: i32, dto: UpdateBookDto) -> bool {
+        use crate::schema::books::dsl::*;
+
+        let connection = self.pool.get().unwrap();
+
+        diesel::update(books.find(index))
+            .set(UpdateBookModel::from_update_book_dto(dto))
+            .execute(&connection)
+            .expect("");
+
         true
     }
 

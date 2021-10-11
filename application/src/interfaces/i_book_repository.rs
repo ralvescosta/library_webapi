@@ -6,6 +6,6 @@ use business::{
 pub trait IBookRepository {
     fn create(&self, dto: CreateBookDto) -> Book;
     fn get_by_id(&self, index: i32) -> Option<Book>;
-    fn update(&self, dto: UpdateBookDto) -> bool;
+    fn update(&self, index: i32, dto: UpdateBookDto) -> bool;
     fn delete_by_id(&self, index: i32) -> bool;
 }

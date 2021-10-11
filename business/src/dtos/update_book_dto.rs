@@ -1,6 +1,6 @@
 pub struct UpdateBookDto {
-    pub title: String,
-    pub subject: String,
-    pub author: String,
-    pub editor: String,
+    pub title: Option<String>,
+    pub subject: Option<String>,
+    pub author: Option<String>,
+    pub editor: Option<String>,
 }
