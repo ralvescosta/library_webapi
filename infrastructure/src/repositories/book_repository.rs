@@ -46,19 +46,27 @@ impl IBookRepository for BookRepository {
     }
 
     fn update(&self, index: i32, dto: UpdateBookDto) -> bool {
-        use crate::schema::books::dsl::*;
+        use crate::schema::books::dsl::books;
 
         let connection = self.pool.get().unwrap();
 
         diesel::update(books.find(index))
             .set(UpdateBookModel::from_update_book_dto(dto))
             .execute(&connection)
-            .expect("");
+            .expect("[BookRepository::update - Error]");
 
         true
     }
 
     fn delete_by_id(&self, index: i32) -> bool {
+        use crate::schema::books::dsl::{books, id};
+
+        let connection = self.pool.get().unwrap();
+
+        diesel::delete(books.filter(id.eq(index)))
+            .execute(&connection)
+            .expect("[BookRepository::delete_by_id - Error]");
+
         true
     }
 }
