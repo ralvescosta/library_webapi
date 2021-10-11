@@ -11,7 +11,7 @@ use crate::database::models::books::{BookModel, CreateBookModel, UpdateBookModel
 use application::errors::internal_error::InternalError;
 
 pub struct BookRepository {
-    _logger: Arc<dyn ILogger>,
+    logger: Arc<dyn ILogger>,
     pool: Arc<Pool<ConnectionManager<PgConnection>>>,
 }
 
@@ -28,6 +28,10 @@ impl IBookRepository for BookRepository {
             return Ok(result.to_book());
         }
 
+        self.logger.error(
+            "[BookRepository::create]",
+            "Some error occur while creating the book",
+        );
         return Err(InternalError::Default);
     }
 
@@ -55,6 +59,11 @@ impl IBookRepository for BookRepository {
             return Ok(true);
         }
 
+        self.logger.error(
+            "[BookRepository::create]",
+            "Some error occur while updating the book",
+        );
+
         Err(InternalError::Default)
     }
 
@@ -67,6 +76,11 @@ impl IBookRepository for BookRepository {
             return Ok(true);
         }
 
+        self.logger.error(
+            "[BookRepository::create]",
+            "Some error occur while deleting the book",
+        );
+
         Err(InternalError::Default)
     }
 }
@@ -76,9 +90,6 @@ impl BookRepository {
         logger: Arc<dyn ILogger>,
         pool: Arc<Pool<ConnectionManager<PgConnection>>>,
     ) -> impl IBookRepository {
-        BookRepository {
-            _logger: logger,
-            pool,
-        }
+        BookRepository { logger, pool }
     }
 }
