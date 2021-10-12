@@ -19,9 +19,12 @@ pub struct CreateBookModel {
 
 impl CreateBookModel {
     pub fn from_create_book_dto(dto: CreateBookDto) -> CreateBookModel {
-        let published_data = match dto.published_data.is_empty() {
-            false => match DateTime::<Utc>::from_str(&dto.published_data) {
-                Ok(date) => Some(date),
+        let published_data = match dto.published_data {
+            Some(value) => match value.is_empty() {
+                false => match DateTime::<Utc>::from_str(&value) {
+                    Ok(date) => Some(date),
+                    _ => None,
+                },
                 _ => None,
             },
             _ => None,
