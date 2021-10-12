@@ -2,8 +2,8 @@ mod controllers;
 mod middleware;
 mod models;
 
-use application::{interfaces::i_logger::ILogger, usecases::book::BookUseCase};
-use business::usecases::i_book::IBookUseCase;
+use application::{interfaces::i_logger::ILogger, usecases::book::CreateBookUseCase};
+use business::usecases::i_book::ICreateBookUseCase;
 use infrastructure::{
     database, environments, logger::logger::Logger, repositories::book_repository::BookRepository,
 };
@@ -22,7 +22,10 @@ async fn main() -> Result<()> {
         let logger = Arc::new(Logger::new());
         let coon_pool = Arc::new(database::connection::create_connection_pool());
         let book_repository = Arc::new(BookRepository::new(logger.clone(), coon_pool.clone()));
-        let book_use_case = Arc::new(BookUseCase::new(logger.clone(), book_repository.clone()));
+        let book_use_case = Arc::new(CreateBookUseCase::new(
+            logger.clone(),
+            book_repository.clone(),
+        ));
 
         App::new()
             .wrap(actix_middleware::Logger::default())
@@ -32,7 +35,7 @@ async fn main() -> Result<()> {
             .data(middleware::deserializer_error::handler())
             // Injections
             .app_data(web::Data::<Arc<dyn ILogger>>::new(logger))
-            .app_data(web::Data::<Arc<dyn IBookUseCase>>::new(book_use_case))
+            .app_data(web::Data::<Arc<dyn ICreateBookUseCase>>::new(book_use_case))
             // routes
             .service(controllers::book::create_book)
     })

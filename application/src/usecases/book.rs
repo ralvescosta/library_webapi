@@ -3,14 +3,14 @@ use std::sync::Arc;
 use crate::interfaces::{i_book_repository::IBookRepository, i_logger::ILogger};
 use business::dtos::create_book_dto::CreateBookDto;
 use business::entities::book::Book;
-use business::usecases::i_book::IBookUseCase;
+use business::usecases::i_book::ICreateBookUseCase;
 
-pub struct BookUseCase {
+pub struct CreateBookUseCase {
     logger: Arc<dyn ILogger>,
     repository: Arc<dyn IBookRepository>,
 }
 
-impl IBookUseCase for BookUseCase {
+impl ICreateBookUseCase for CreateBookUseCase {
     fn perform(&self, dto: CreateBookDto) -> Result<Book, ()> {
         self.logger.info("IBookUseCase", "Logger");
         if let Ok(result) = self.repository.create(dto) {
@@ -20,11 +20,11 @@ impl IBookUseCase for BookUseCase {
         Err(())
     }
 }
-impl BookUseCase {
+impl CreateBookUseCase {
     pub fn new(
         logger: Arc<dyn ILogger>,
         repository: Arc<dyn IBookRepository>,
-    ) -> impl IBookUseCase {
-        BookUseCase { logger, repository }
+    ) -> impl ICreateBookUseCase {
+        CreateBookUseCase { logger, repository }
     }
 }
