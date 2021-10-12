@@ -8,7 +8,7 @@ use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use application::interfaces::i_logger::ILogger;
 use business::usecases::i_book::IBookUseCase;
 
-#[post("/api/v1/book")]
+#[post("/api/v1/books")]
 pub async fn create_book(
     logger: web::Data<Arc<dyn ILogger>>,
     model: web::Json<BookModel>,
@@ -29,7 +29,7 @@ pub async fn create_book(
     return HttpResponse::Ok().json(ResponseCreateBookModel::from_book(result.unwrap()));
 }
 
-#[get("/api/v1/book")]
+#[get("/api/v1/books")]
 pub async fn get_book_by_id(
     _logger: web::Data<Arc<dyn ILogger>>,
     _model: web::Json<BookModel>,
@@ -38,7 +38,7 @@ pub async fn get_book_by_id(
     HttpResponse::Ok().body("GET /api/v1/book")
 }
 
-#[put("/api/v1/book")]
+#[put("/api/v1/books")]
 pub async fn update_book(
     _logger: web::Data<Arc<dyn ILogger>>,
     _model: web::Json<BookModel>,
@@ -47,7 +47,7 @@ pub async fn update_book(
     HttpResponse::Ok().body("PUT /api/v1/book")
 }
 
-#[delete("/api/v1/book")]
+#[delete("/api/v1/books")]
 pub async fn delete_book(
     _logger: web::Data<Arc<dyn ILogger>>,
     _model: web::Json<BookModel>,
