@@ -1,4 +1,7 @@
-use business::{dtos::create_book_dto::CreateBookDto, entities::book::Book};
+use business::{
+    dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBookDto},
+    entities::book::Book,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -48,7 +51,20 @@ impl ResponseCreateBookModel {
 }
 
 #[derive(Deserialize)]
-pub struct UpdateBookModel;
+pub struct UpdateBookModel {
+    pub title: Option<String>,
+    pub subject: Option<String>,
+    pub author: Option<String>,
+    pub editor: Option<String>,
+}
 
-#[derive(Serialize)]
-pub struct ResponseUpdateBookModel;
+impl UpdateBookModel {
+    pub fn to_update_book_dto(&self) -> UpdateBookDto {
+        UpdateBookDto {
+            title: self.title.clone(),
+            subject: self.subject.clone(),
+            author: self.author.clone(),
+            editor: self.editor.clone(),
+        }
+    }
+}

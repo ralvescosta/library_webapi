@@ -1,12 +1,12 @@
 use crate::models::{
-    book::{CreateBookModel, ResponseCreateBookModel, ResponseUpdateBookModel, UpdateBookModel},
+    book::{CreateBookModel, ResponseCreateBookModel, UpdateBookModel},
     http_error::HttpError,
 };
 use std::sync::Arc;
 
 use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use application::interfaces::i_logger::ILogger;
-use business::usecases::i_book::{ICreateBookUseCase, IGetBookUseCase};
+use business::usecases::i_book::{ICreateBookUseCase, IGetBookUseCase, IUpdateBookUseCase};
 
 #[post("/api/v1/books")]
 pub async fn create_book(
@@ -51,10 +51,22 @@ pub async fn get_book_by_id(
 #[put("/api/v1/books/{id}")]
 pub async fn update_book(
     web::Path(id): web::Path<i32>,
-    _logger: web::Data<Arc<dyn ILogger>>,
-    _model: web::Json<UpdateBookModel>,
+    model: web::Json<UpdateBookModel>,
+    use_case: web::Data<Arc<dyn IUpdateBookUseCase>>,
 ) -> impl Responder {
-    HttpResponse::Ok().body("PUT /api/v1/book")
+    match use_case.perform(id, model.to_update_book_dto()) {
+        Ok(updated) if updated => HttpResponse::Ok().json({}),
+        Ok(updated) if !updated => HttpResponse::BadRequest().json(HttpError {
+            status_code: 400,
+            details: "The id not belongs this application".to_string(),
+            message: "Bad Request".to_string(),
+        }),
+        _ => HttpResponse::BadRequest().json(HttpError {
+            status_code: 400,
+            details: "Some error occur".to_string(),
+            message: "Bad Request".to_string(),
+        }),
+    }
 }
 
 #[delete("/api/v1/books/{id}")]
