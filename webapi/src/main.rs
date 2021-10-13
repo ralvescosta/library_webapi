@@ -2,8 +2,13 @@ mod controllers;
 mod middleware;
 mod models;
 
-use application::{interfaces::i_logger::ILogger, usecases::book::CreateBookUseCase};
-use business::usecases::i_book::ICreateBookUseCase;
+use application::{
+    interfaces::i_logger::ILogger,
+    usecases::book::{CreateBookUseCase, DeleteBookUseCase, GetBookUseCase, UpdateBookUseCase},
+};
+use business::usecases::i_book::{
+    ICreateBookUseCase, IDeleteBookUseCase, IGetBookUseCase, IUpdateBookUseCase,
+};
 use infrastructure::{
     database, environments, logger::logger::Logger, repositories::book_repository::BookRepository,
 };
@@ -22,10 +27,13 @@ async fn main() -> Result<()> {
         let logger = Arc::new(Logger::new());
         let coon_pool = Arc::new(database::connection::create_connection_pool());
         let book_repository = Arc::new(BookRepository::new(logger.clone(), coon_pool.clone()));
-        let book_use_case = Arc::new(CreateBookUseCase::new(
+        let create_book = Arc::new(CreateBookUseCase::new(
             logger.clone(),
             book_repository.clone(),
         ));
+        let get_book = Arc::new(GetBookUseCase::new(book_repository.clone()));
+        let update_book = Arc::new(UpdateBookUseCase::new(book_repository.clone()));
+        let delete_book = Arc::new(DeleteBookUseCase::new(book_repository.clone()));
 
         App::new()
             .wrap(actix_middleware::Logger::default())
@@ -35,7 +43,10 @@ async fn main() -> Result<()> {
             .data(middleware::deserializer_error::handler())
             // Injections
             .app_data(web::Data::<Arc<dyn ILogger>>::new(logger))
-            .app_data(web::Data::<Arc<dyn ICreateBookUseCase>>::new(book_use_case))
+            .app_data(web::Data::<Arc<dyn ICreateBookUseCase>>::new(create_book))
+            .app_data(web::Data::<Arc<dyn IGetBookUseCase>>::new(get_book))
+            .app_data(web::Data::<Arc<dyn IUpdateBookUseCase>>::new(update_book))
+            .app_data(web::Data::<Arc<dyn IDeleteBookUseCase>>::new(delete_book))
             // routes
             .service(controllers::book::create_book)
     })
