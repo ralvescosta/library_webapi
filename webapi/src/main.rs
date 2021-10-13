@@ -49,6 +49,9 @@ async fn main() -> Result<()> {
             .app_data(web::Data::<Arc<dyn IDeleteBookUseCase>>::new(delete_book))
             // routes
             .service(controllers::book::create_book)
+            .service(controllers::book::get_book_by_id)
+            .service(controllers::book::update_book)
+            .service(controllers::book::delete_book)
     })
     .bind("127.0.0.1:3333")?
     .run()

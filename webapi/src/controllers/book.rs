@@ -32,10 +32,9 @@ pub async fn get_book_by_id(
     web::Path(id): web::Path<i32>,
     use_case: web::Data<Arc<dyn IGetBookUseCase>>,
 ) -> impl Responder {
-    println!("ok");
     match use_case.perform(id) {
         Ok(book) => match book {
-            Some(book) => HttpResponse::BadRequest().json(ResponseCreateBookModel::from_book(book)),
+            Some(book) => HttpResponse::Ok().json(ResponseCreateBookModel::from_book(book)),
             None => HttpResponse::BadRequest().json(HttpError {
                 status_code: 404,
                 details: "The id not belongs this application".to_string(),
