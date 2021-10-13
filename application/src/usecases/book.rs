@@ -1,11 +1,12 @@
 use std::sync::Arc;
 
 use crate::interfaces::{i_book_repository::IBookRepository, i_logger::ILogger};
-use business::dtos::create_book_dto::CreateBookDto;
-use business::dtos::update_book_dto::UpdateBookDto;
-use business::entities::book::Book;
-use business::usecases::i_book::{
-    ICreateBookUseCase, IDeleteBookUseCase, IGetBookUseCase, IUpdateBookUseCase,
+use business::{
+    dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBookDto},
+    entities::book::Book,
+    usecases::i_book::{
+        ICreateBookUseCase, IDeleteBookUseCase, IGetBookUseCase, IUpdateBookUseCase,
+    },
 };
 
 pub struct CreateBookUseCase {

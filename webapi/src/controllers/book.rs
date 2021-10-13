@@ -1,10 +1,11 @@
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
+use std::sync::Arc;
+
 use crate::models::{
     book::{CreateBookModel, ResponseCreateBookModel, UpdateBookModel},
     http_error::HttpError,
 };
-use std::sync::Arc;
 
-use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use application::interfaces::i_logger::ILogger;
 use business::usecases::i_book::{
     ICreateBookUseCase, IDeleteBookUseCase, IGetBookUseCase, IUpdateBookUseCase,

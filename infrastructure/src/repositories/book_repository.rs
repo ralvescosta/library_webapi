@@ -1,14 +1,20 @@
-use diesel::pg::PgConnection;
 use diesel::prelude::*;
-use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::{
+    pg::PgConnection,
+    r2d2::{ConnectionManager, Pool},
+};
 use std::sync::Arc;
 
-use application::interfaces::{i_book_repository::IBookRepository, i_logger::ILogger};
-use business::dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBookDto};
-use business::entities::book::Book;
+use application::{
+    errors::internal_error::InternalError,
+    interfaces::{i_book_repository::IBookRepository, i_logger::ILogger},
+};
+use business::{
+    dtos::{create_book_dto::CreateBookDto, update_book_dto::UpdateBookDto},
+    entities::book::Book,
+};
 
 use crate::database::models::books::{BookModel, CreateBookModel, UpdateBookModel};
-use application::errors::internal_error::InternalError;
 
 pub struct BookRepository {
     logger: Arc<dyn ILogger>,
