@@ -6,7 +6,9 @@ use std::sync::Arc;
 
 use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use application::interfaces::i_logger::ILogger;
-use business::usecases::i_book::{ICreateBookUseCase, IGetBookUseCase, IUpdateBookUseCase};
+use business::usecases::i_book::{
+    ICreateBookUseCase, IDeleteBookUseCase, IGetBookUseCase, IUpdateBookUseCase,
+};
 
 #[post("/api/v1/books")]
 pub async fn create_book(
@@ -15,7 +17,6 @@ pub async fn create_book(
     use_case: web::Data<Arc<dyn ICreateBookUseCase>>,
 ) -> impl Responder {
     logger.info("[Controller::create_book]", "...");
-
     match use_case.perform(model.to_create_book_dto()) {
         Ok(book) => HttpResponse::Ok().json(ResponseCreateBookModel::from_book(book)),
         _ => HttpResponse::BadRequest().json(HttpError {
@@ -31,6 +32,7 @@ pub async fn get_book_by_id(
     web::Path(id): web::Path<i32>,
     use_case: web::Data<Arc<dyn IGetBookUseCase>>,
 ) -> impl Responder {
+    println!("ok");
     match use_case.perform(id) {
         Ok(book) => match book {
             Some(book) => HttpResponse::BadRequest().json(ResponseCreateBookModel::from_book(book)),
@@ -72,7 +74,19 @@ pub async fn update_book(
 #[delete("/api/v1/books/{id}")]
 pub async fn delete_book(
     web::Path(id): web::Path<i32>,
-    _logger: web::Data<Arc<dyn ILogger>>,
+    use_case: web::Data<Arc<dyn IDeleteBookUseCase>>,
 ) -> impl Responder {
-    HttpResponse::Ok().body("DELETE /api/v1/book")
+    match use_case.perform(id) {
+        Ok(deleted) if deleted => HttpResponse::Ok().json({}),
+        Ok(deleted) if !deleted => HttpResponse::BadRequest().json(HttpError {
+            status_code: 400,
+            details: "The id not belongs this application".to_string(),
+            message: "Bad Request".to_string(),
+        }),
+        _ => HttpResponse::BadRequest().json(HttpError {
+            status_code: 400,
+            details: "Some error occur".to_string(),
+            message: "Bad Request".to_string(),
+        }),
+    }
 }
