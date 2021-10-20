@@ -62,14 +62,29 @@ is bin project.
 |       │       └── down.sql
 |       │        └── up.sql
 |       ├── src
-│       │   └── database
-│       │   └── environments
-│       │   └── logger
+│       │   ├── database
+|       |   ├── └── mod.rs
+│       │   ├── environments
+|       |   ├── └── mod.rs
+│       │   ├── logger
+|       |   ├── └── mod.rs
 │       │   └── repositories
+|       |       └── mod.rs
 │       ├── lib.rs
 │       ├── schema.rs
 │       ├── Cargo.toml
 │       └── diesel.toml
+|
+│   └── webapi
+|       ├── src
+│       │   ├── controllers
+|       |   ├── └── mod.rs
+│       │   ├── middleware
+|       |   ├── └── mod.rs
+│       │   └── models
+|       |       └── mod.rs
+|       ├── main.rs
+│       └── Cargo.toml
 |
 │   └── Cargo.lock
 └──---  Cargo.toml
