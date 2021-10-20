@@ -27,9 +27,52 @@ is bin project.
 - The **WebApi Layer** is responsible to the presentation resources in our application.
 
 ## Project Structure
-
 ```
-
+|
+│   └── business
+|       └── src
+|           ├── dtos
+|           |   └── *_dto.rs
+|           |   └── mod.rs
+|           ├── entities
+|           |   └── *.rs
+|           |   └── mod.rs
+|           ├── usecases
+│           |   └── i_*.rs
+|           |   └── mod.rs
+|           ├── lib.rs
+│           └── Cargo.toml
+|       
+│   └── application
+|       └── src        
+│           ├── errors
+│           |   └── *_error.rs
+│           |   └── mod.rs
+│           ├── interfaces
+│           |   └── i_*.rs
+│           ├── usecase
+│           |   └── *.rs
+|           |   └── mod.rs
+|           ├── lib.rs
+|           └── Cargo.toml
+│        
+│   └── infrastructure
+|       ├── migrations
+│       │   └── folder
+|       │       └── down.sql
+|       │        └── up.sql
+|       ├── src
+│       │   └── database
+│       │   └── environments
+│       │   └── logger
+│       │   └── repositories
+│       ├── lib.rs
+│       ├── schema.rs
+│       ├── Cargo.toml
+│       └── diesel.toml
+|
+│   └── Cargo.lock
+└──---  Cargo.toml
 ```
 
 ## Installation
